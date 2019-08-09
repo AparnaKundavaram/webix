@@ -1,0 +1,89 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdn.webix.com/edge/webix.css" type="text/css">
+    <script src="https://cdn.webix.com/edge/webix.js" type="text/javascript"></script>
+</head>
+
+<body>
+    <div id="box" style="width: 800px;height:400px"></div>
+    <script type="text/javascript" charset="utf-8">
+        var emp = {
+            view: "datatable", id: "myEmp",
+            columns: [
+                { id: "Name", header: "Name", width: 300 },
+                { id: "Role", header: "Role", width: 150 },
+                { id: "ID", header: "ID", width: 150 },
+                { id: "Gender", header: "Gender", width: 150 },
+                { id: "Number", header: "Number", width: 100 }
+
+            ],
+            autoheight: true,
+            scroll: false,
+            select: true,
+        };
+
+        var gender = [
+            { id: 1, value: "Female" },
+            { id: 2, value: "Male" },
+            { id: 3, value: "Wish not to disclose" }
+        ];
+        webix.ready(function () {
+            webix.ui({
+                container: "box",
+                type: "line",
+                rows: [
+                    {
+                        cols:
+                            [
+                                { view: "label", label: "Data Grid", align: "center" }
+                            ]
+                    },
+                    emp,
+                    { type: "section", template: "Enter Employee Details" },
+                    {
+                        cols: [
+                            {
+                                view: "form", id: "myform", width: 300, elements: [
+                                    { view: "text", label: "Name", name:"Name", width: 300, placeholder: "Enter the name" },
+                                    { view: "text", label: "Role", name:"Role", width: 300 },
+                                    { view: "text", label: "Number", name:"Number", width: 300 },
+                                    { view: "text", label: "ID", name:"ID", width: 300 },
+                                    { view: "combo", options: gender, label: "Gender",name:"Gender", width: 300 }]
+                            },
+                        ]
+                    },
+                    {
+                        view: "toolbar", id: "mybar", elements: [
+                            { view: "button", value: "Save", width: 300, click: save_row },
+                            { view: "button", value: "Delete", width: 300, click: delete_row },
+                            { view: "button", value: "Clear", width: 300, click:() => $$("myform").clear()}
+                        ]
+                    }
+                ]
+            });
+            function save_row() {
+                const values = $$("myform").getValues();
+                $$("myEmp").add(values);
+                $$("myEmp").refresh();
+            }
+            function delete_row() {
+                var id = $$("myEmp").getSelectedId();
+
+                webix.confirm({
+                    title: "Delete",
+                    text: "Are you sure you want to delete the selected item?",
+                    callback: function (result) {
+                        if (result) {
+                            $$("myEmp").remove(id);
+                        }
+                    }
+                });
+            }
+        });
+
+    </script>
+</body>
+
+</html>
